@@ -3,7 +3,7 @@ package com.danielvilla.joc;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import com.danielvilla.joc.Game;
+import com.danielvilla.joc.Drop;
 
 public class DesktopLauncher {
 	public static void main (String[] args) {
@@ -12,6 +12,6 @@ public class DesktopLauncher {
 		config.setWindowedMode(800,400);
 		config.useVsync(true);
 		config.setForegroundFPS(60);
-		new Lwjgl3Application(new Game(), config);
+		new Lwjgl3Application(new Drop(), config);
 	}
 }
