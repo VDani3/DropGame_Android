@@ -1,0 +1,4 @@
+#Sun Apr 07 10:22:20 CEST 2024
+base.0=D\:\\2.Grado Superior\\M8-ProgramacioMultimedia\\UF3\\DropGame_Android\\android\\build\\intermediates\\dex\\debug\\mergeDexDebug\\classes.dex
+path.0=classes.dex
+renamed.0=classes.dex

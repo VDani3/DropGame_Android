@@ -24,13 +24,14 @@ import com.danielvilla.joc.MainMenuScreen;
 public class GameScreen implements Screen {
 	final Drop game;
 
-	Texture dropImage, heartImage, bucketImage;
-	Sound dropSound;
+	Texture dropImage, heartImage, bucketImage, backgroundImage, coinImage;
+	Sound dropSound, gameOver;
 	Music rainMusic;
 	OrthographicCamera camera;
 	Rectangle bucket, heart;
 	Array<Rectangle> raindrops;
-	long lastDropTime;
+	Array<Rectangle> coins;
+	long lastDropTime, lastCoinTime;
 	int dropsGathered, hearts = 3;
 
 	public GameScreen(final Drop game) {
@@ -38,11 +39,14 @@ public class GameScreen implements Screen {
 
 		//Load Images
 		dropImage = new Texture(Gdx.files.internal("drop.png"));
+		coinImage = new Texture(Gdx.files.internal("coin.png"));
 		bucketImage = new Texture(Gdx.files.internal("bucket.png"));
 		heartImage = new Texture(Gdx.files.internal("heart.png"));
+		backgroundImage = new Texture(Gdx.files.internal("background.png"));
 
 		//Load Sounds
 		dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
+		gameOver  = Gdx.audio.newSound(Gdx.files.internal("gameOverSound.wav"));
 		rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
 		rainMusic.setLooping(true);
 
@@ -66,6 +70,8 @@ public class GameScreen implements Screen {
 		//Create the raindrops array and spawn the first raindrop
 		raindrops = new Array<Rectangle>();
 		spawnRaindrop();
+		coins = new Array<Rectangle>();
+
 
 	}
 
@@ -79,10 +85,20 @@ public class GameScreen implements Screen {
 		lastDropTime = TimeUtils.nanoTime();
 	}
 
+	private void spawnCoin() {
+		Rectangle coin = new Rectangle();
+		coin.x = MathUtils.random(0, 800 - 64);
+		coin.y = 480;
+		coin.width = 64;
+		coin.height = 64;
+		coins.add(coin);
+		lastCoinTime = TimeUtils.nanoTime();
+	}
+
 	@Override
 	public void render(float delta) {
 		//Set the screen color
-		ScreenUtils.clear(0, 0, 0.2f, 1);
+		ScreenUtils.clear(1, 1, 1, 1);
 
 		camera.update();
 
@@ -91,11 +107,18 @@ public class GameScreen implements Screen {
 
 		//Draw bucket and drops
 		game.batch.begin();
-		game.font.draw(game.batch, "Drops Collected: " + dropsGathered, 0, 480);
+		game.batch.draw(backgroundImage, 0, 0, camera.viewportWidth, camera.viewportHeight);
+		game.font.draw(game.batch, "Score: " + dropsGathered, 0, 480);
 		game.batch.draw(bucketImage, bucket.x, bucket.y, bucket.width, bucket.height);
+		//RainDrops
 		for (Rectangle raindrop : raindrops) {
 			game.batch.draw(dropImage, raindrop.x, raindrop.y);
 		}
+		//Coins
+		for (Rectangle coin : coins) {
+			game.batch.draw(coinImage, coin.x, coin.y);
+		}
+		//Hearts
 		for (int i = 0; i< hearts; i++) {
 			game.batch.draw(heartImage, 400+heartImage.getWidth() + 1+(i*25), 400, heart.width, heart.height);
 		}
@@ -115,14 +138,26 @@ public class GameScreen implements Screen {
 		if (bucket.x < 0) bucket.x = 800-65;
 		if (bucket.x > 800 - 64) bucket.x = 1;
 
-		//Create drop if necesary
+		//Create drop and coin if necesary
 		if (TimeUtils.nanoTime() - lastDropTime > 1000000000) spawnRaindrop();
+		if (TimeUtils.nanoTime() - 2000000000 - lastCoinTime > 2130000000) spawnCoin();
 
 		// Move and eliminate the drops
+		moveComponents();
+
+		if (hearts <= 0) {
+			gameOver.play();
+			game.setScreen(new GameOverScreen(game));
+			dispose();
+		}
+	}
+
+	private void moveComponents() {
+		//Drops
 		Iterator<Rectangle> iter = raindrops.iterator();
 		while (iter.hasNext()) {
 			Rectangle raindrop = iter.next();
-			raindrop.y -= 200 * Gdx.graphics.getDeltaTime();
+			raindrop.y -= 270 * Gdx.graphics.getDeltaTime();
 			if (raindrop.y + 64 < 0) {
 				iter.remove();
 				hearts--;
@@ -134,10 +169,20 @@ public class GameScreen implements Screen {
 				iter.remove();
 			}
 		}
+		//Coins
+		Iterator<Rectangle> iterc = coins.iterator();
+		while (iterc.hasNext()) {
+			Rectangle coin = iterc.next();
+			coin.y -= 500 * Gdx.graphics.getDeltaTime();
+			if (coin.y + 64 < 0) {
+				iterc.remove();
+			}
 
-		if (hearts <= 0) {
-			game.setScreen(new GameOverScreen(game));
-			dispose();
+			if (coin.overlaps(bucket)) {
+				dropsGathered += 5;
+				dropSound.play();
+				iterc.remove();
+			}
 		}
 	}
 
@@ -166,7 +211,10 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void dispose() {
+		coinImage.dispose();
+		backgroundImage.dispose();
 		dropImage.dispose();
+		gameOver.dispose();
 		bucketImage.dispose();
 		dropSound.dispose();
 		rainMusic.dispose();

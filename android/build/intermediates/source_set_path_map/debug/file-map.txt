@@ -1,0 +1,7 @@
+com.danielvilla.joc.android-pngs-0 D:\2.Grado Superior\M8-ProgramacioMultimedia\UF3\DropGame_Android\android\build\generated\res\pngs\debug
+com.danielvilla.joc.android-resValues-1 D:\2.Grado Superior\M8-ProgramacioMultimedia\UF3\DropGame_Android\android\build\generated\res\resValues\debug
+com.danielvilla.joc.android-packageDebugResources-2 D:\2.Grado Superior\M8-ProgramacioMultimedia\UF3\DropGame_Android\android\build\intermediates\incremental\debug\packageDebugResources\merged.dir
+com.danielvilla.joc.android-packageDebugResources-3 D:\2.Grado Superior\M8-ProgramacioMultimedia\UF3\DropGame_Android\android\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
+com.danielvilla.joc.android-merged_res-4 D:\2.Grado Superior\M8-ProgramacioMultimedia\UF3\DropGame_Android\android\build\intermediates\merged_res\debug
+com.danielvilla.joc.android-android-5 D:\2.Grado Superior\M8-ProgramacioMultimedia\UF3\DropGame_Android\android\res
+com.danielvilla.joc.android-debug-6 D:\2.Grado Superior\M8-ProgramacioMultimedia\UF3\DropGame_Android\android\src\debug\res

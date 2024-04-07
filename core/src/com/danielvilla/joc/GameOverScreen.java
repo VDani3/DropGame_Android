@@ -24,7 +24,7 @@ public class GameOverScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        ScreenUtils.clear(0,0,0.2f,1);
+        ScreenUtils.clear(255,0,0.2f,1);
 
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
@@ -33,8 +33,14 @@ public class GameOverScreen implements Screen {
         game.font.draw(game.batch, "You Loose", 100, 100);
         game.batch.end();
 
+
         if (Gdx.input.isTouched()){
             game.setScreen(new MainMenuScreen(game));
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             dispose();
         }
 
